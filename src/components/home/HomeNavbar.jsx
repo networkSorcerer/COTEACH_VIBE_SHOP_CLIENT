@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 
 function HomeNavbar({ user, isAdmin }) {
+  console.log("isAdmin??????:::::",isAdmin)
+  console.log("user??????:::::",user)
   return (
     <header className="navbar sticky">
       <div className="navbar-inner">
         <div className="brand">
           <span className="swoosh">NIKE</span>
-          <span className="subbrand">Jordan</span>
         </div>
 
         <nav className="nav-links">

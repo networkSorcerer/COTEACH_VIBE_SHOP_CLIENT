@@ -1,22 +1,34 @@
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { loginWithToken } from "../features/user/userSlice";
 
-export default function AdminDashboard({ user }) {
+export default function AdminDashboard() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
+  const {user} = useSelector((state) => state.user)
   useEffect(() => {
     console.log("user-type ::::: " , user)
-    if (!user || user.user_type !== "admin") {
+    if (!user || user.level !== "admin") {
       navigate("/");
     }
   }, [user, navigate]);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      dispatch(loginWithToken());
+    }
+  }, []);
+
 
   return (
     <div style={styles.page}>
       {/* Header */}
       <header style={styles.header}>
         <div style={styles.logo}>
-          <h1>CIDER</h1>
+          <h1>NIKE</h1>
           <span style={styles.badge}>ADMIN</span>
         </div>
         <button style={styles.outlineBtn} onClick={() => navigate("/")}>
@@ -28,7 +40,7 @@ export default function AdminDashboard({ user }) {
       <section style={{ marginBottom: 24 }}>
         <h2>관리자 대시보드</h2>
         <p style={{ color: "#666" }}>
-          CIDER 쇼핑몰 관리 시스템에 오신 것을 환영합니다.
+          NIKE 쇼핑몰 관리 시스템에 오신 것을 환영합니다.
         </p>
       </section>
 

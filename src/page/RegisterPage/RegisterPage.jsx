@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
 import "./style/register.style.css";
-import { clearErrors, registerUser } from "../features/user/userSlice";
 
+import { clearErrors, registerUser } from "../../features/user/userSlice";
 
-const SignupForm = () => {
+const RegisterPage = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     email: "",
@@ -117,13 +117,12 @@ const SignupForm = () => {
             checked={formData.policy}
           />
         </Form.Group>
-        <Button variant="dark" type="submit">
+        <Button variant="danger" type="submit">
           회원가입
         </Button>
-
       </Form>
     </Container>
   );
 };
 
-export default SignupForm;
+export default RegisterPage;

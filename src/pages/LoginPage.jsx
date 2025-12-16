@@ -1,25 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../api/auth";
 import "../styles/auth.css";
+import { useDispatch, useSelector } from "react-redux";
+import { loginWithEmail } from "../features/user/userSlice";
 
 function LoginPage() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const {user, loginError} = useSelector((state) => state.user);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState({ loading: false, error: "" });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      setStatus({ loading: true, error: "" });
-      const data = await login({ email, password });
-      localStorage.setItem("token", data.token);
-      navigate("/");
-    } catch (err) {
-      setStatus({ loading: false, error: err.message });
+  useEffect(() => {
+    if (loginError) {
+      dispatch(clearErrors());
     }
+  }, [navigate]);
+
+  const handleLoginWithEmail = (event) => {
+    event.preventDefault();
+    dispatch(loginWithEmail({ email, password }));
   };
+
+  if (user) {
+    navigate("/");
+  }
 
   return (
     <div className="page">
@@ -32,7 +38,7 @@ function LoginPage() {
         <h2 className="auth-title">로그인</h2>
         <p className="auth-sub">나이키 멤버로 쇼핑을 시작하세요</p>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <form className="auth-form" onSubmit={handleLoginWithEmail}>
           <label className="field">
             <span>이메일</span>
             <input

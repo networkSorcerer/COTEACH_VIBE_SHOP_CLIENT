@@ -5,21 +5,7 @@ import HeroLink from "../components/home/HeroLink.jsx";
 import FeatureBanners from "../components/home/FeatureBanners.jsx";
 
 function HomePage() {
-  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    getMe()
-      .then((data) => setUser(data))
-      .catch(() => {
-        localStorage.removeItem("token");
-        setUser(null);
-      });
-  }, []);
-
-  const isAdmin = user?.user_type === "admin";
 
   const featureBanners = [
     {
@@ -39,7 +25,7 @@ function HomePage() {
 
   return (
     <div className="page page-home">
-      <HomeNavbar user={user} isAdmin={isAdmin} />
+ 
 
       <HeroLink
         href="https://www.nike.com/kr/w/lifestyle-13jrmz37eefz7yfb"

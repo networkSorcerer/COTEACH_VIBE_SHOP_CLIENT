@@ -1,20 +1,17 @@
-
-import { Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage.jsx";
-import SignupPage from "./pages/SignupPage.jsx";
-import LoginPage from "./pages/LoginPage.jsx";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import AdminDashboard from "./pages/AdminDashboard";
 
+import "./common/style/common.style.css";
+import AppLayout from "./Layout/AppLayout";
+import AppRouter from "./routes/AppRouter";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/signup" element={<SignupPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/admin" element={<AdminDashboard />} />
-    </Routes>
+    <div>
+      <AppLayout>
+        <AppRouter />
+      </AppLayout>
+    </div>
   );
 }
 
