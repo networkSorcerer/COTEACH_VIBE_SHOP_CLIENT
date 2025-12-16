@@ -1,93 +1,62 @@
-import { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { getMe } from "../api/auth.js";
+import HomeNavbar from "../components/home/HomeNavbar.jsx";
+import HeroLink from "../components/home/HeroLink.jsx";
+import FeatureBanners from "../components/home/FeatureBanners.jsx";
 
 function HomePage() {
-  const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      getMe()
-        .then((data) => {
-          setUser(data);
-        })
-        .catch(() => {
-          // 토큰이 유효하지 않으면 무시
-          localStorage.removeItem("token");
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
-    }
+    if (!token) return;
+
+    getMe()
+      .then((data) => setUser(data))
+      .catch(() => {
+        localStorage.removeItem("token");
+        setUser(null);
+      });
   }, []);
 
-  // 외부 클릭 시 드롭다운 닫기
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false);
-      }
-    }
+  const isAdmin = user?.user_type === "admin";
 
-    if (showDropdown) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showDropdown]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
-    setShowDropdown(false);
-    navigate("/");
-  };
+  const featureBanners = [
+    {
+      title: "시선을 멈추는 지배자들",
+      href: "https://www.nike.com/kr/w/football-lifestyle-7n4yn",
+      image:
+        "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1600&q=80",
+    },
+    {
+      title: "르브론 XXIII ‘STOCKING STUFFER’ 컬러웨이",
+      href:
+        "https://www.nike.com/kr/basketball/lebron-james/lebron-xxiii-stocking-stuffer",
+      image:
+        "https://static.nike.com/a/images/f_auto,cs_srgb/w_1920,c_limit/4a7d8144-c073-42a5-8d9d-b9827750739f/%EB%A5%B4%EB%A1%A0-xxiii-%E2%80%98stocking-stuffer%E2%80%99-%EC%BB%AC%EB%9F%AC%EC%9B%A8%EC%9D%B4.jpg",
+    },
+  ];
 
   return (
     <div className="page page-home">
-      {user && (
-        <div className="user-greeting" ref={dropdownRef}>
-          <button
-            className="user-greeting-btn"
-            onClick={() => setShowDropdown(!showDropdown)}
-          >
-            {user.name}님 반갑습니다
-          </button>
-          {showDropdown && (
-            <div className="dropdown-menu">
-              <button className="dropdown-item" onClick={handleLogout}>
-                로그아웃
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-      <div className="card hero">
-        <h1>쇼핑몰 메인</h1>
-        <p>새 계정을 만들어 쇼핑을 시작하세요.</p>
-        <div className="home-actions">
-          <Link to="/signup">
-            <button className="primary">회원가입</button>
-          </Link>
-          {!user && (
-            <Link to="/login">
-              <button className="ghost">로그인</button>
-            </Link>
-          )}
-        </div>
-      </div>
+      <HomeNavbar user={user} isAdmin={isAdmin} />
+
+      <HeroLink
+        href="https://www.nike.com/kr/w/lifestyle-13jrmz37eefz7yfb"
+        title="스포츠로 완성하는 스타일"
+        eyebrow="JUST DO IT."
+        subtitle={
+          <>
+            라이프스타일과 퍼포먼스를 동시에.
+            <br />
+            지금 바로 나이키 컬렉션을 만나보세요.
+          </>
+        }
+      />
+
+      <FeatureBanners banners={featureBanners} />
     </div>
   );
 }
 
 export default HomePage;
-
