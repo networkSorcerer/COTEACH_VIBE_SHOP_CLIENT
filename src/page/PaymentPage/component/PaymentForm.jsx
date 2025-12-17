@@ -1,7 +1,5 @@
 import React from "react";
 import { Col, Form, Row } from "react-bootstrap";
-import Cards from "react-credit-cards-2";
-import "react-credit-cards-2/dist/es/styles-compiled.css";
 
 const PaymentForm = ({
   handleInputFocus,
@@ -10,14 +8,14 @@ const PaymentForm = ({
 }) => {
   return (
     <Row className="display-flex">
+      {/* 카드가 렌더링될 자리 (나중에 대체 라이브러리 사용 시) */}
       <Col md={6} xs={12}>
-        <Cards
-          cvc={cardValue.cvc}
-          expiry={cardValue.expiry}
-          focused={cardValue.focus}
-          name={cardValue.name}
-          number={cardValue.number}
-        />
+        <div className="credit-card-display-placeholder">
+          {/* 이곳에 카드 정보를 시각적으로 표시할 placeholder 또는 직접 구현 */}
+          <div className="card-number-display">{cardValue.number || "#### #### #### ####"}</div>
+          <div className="card-name-display">{cardValue.name || "YOUR NAME"}</div>
+          <div className="card-expiry-display">{cardValue.expiry || "MM/YY"}</div>
+        </div>
       </Col>
       <Col md={6} xs={12}>
         <div className="form-area">

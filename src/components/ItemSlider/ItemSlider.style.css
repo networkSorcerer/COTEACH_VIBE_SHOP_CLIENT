@@ -1,0 +1,18 @@
+.carousel-container {
+  overflow: hidden;
+  height: 440px;
+}
+.banner-title {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* 모던 느낌 */
+  font-size: 2rem; /* 적당한 크기 */
+  font-weight: 700; /* 강조 */
+  color: #fff; /* 흰색 글씨 */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* 살짝 그림자 */
+  letter-spacing: 1px; /* 글자 간격 넷플릭스 느낌 */
+  margin: 0; /* 기본 마진 제거 */
+  padding: 0.5rem 1rem; /* 약간의 여백 */
+  background: rgba(0, 0, 0, 0.4); /* 배너 배경 일부 투명 블랙 */
+  display: inline-block; /* 배경을 글자 크기에 맞춤 */
+  border-radius: 4px; /* 둥근 모서리 */
+  transition: transform 0.3s ease, color 0.3s ease;
+}

@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import OrderStatusCard from "./component/OrderStatusCard";
+import OrderStatusCard from "./component/OrderStatusCard.jsx";
 import "./style/orderStatus.style.css";
 import { getOrder } from "../../features/order/orderSlice";
 

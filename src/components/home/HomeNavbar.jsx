@@ -1,8 +1,20 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Dropdown } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { logout } from "../../features/user/userSlice";
 
 function HomeNavbar({ user, isAdmin }) {
-  console.log("isAdmin??????:::::",isAdmin)
-  console.log("user??????:::::",user)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
+  const goToCart = () => {
+    navigate("/cart");
+  };
+
   return (
     <header className="navbar sticky">
       <div className="navbar-inner">
@@ -35,7 +47,16 @@ function HomeNavbar({ user, isAdmin }) {
               </Link>
             </>
           ) : (
-            <div className="greeting-badge">{user.name}</div>
+            <Dropdown>
+              <Dropdown.Toggle as="div" className="greeting-badge" id="dropdown-basic">
+                {user.name}
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={goToCart}>장바구니</Dropdown.Item>
+                <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           )}
         </div>
       </div>

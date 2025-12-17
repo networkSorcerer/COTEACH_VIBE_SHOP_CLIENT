@@ -3,7 +3,7 @@ import { getMe } from "../api/auth.js";
 import HomeNavbar from "../components/home/HomeNavbar.jsx";
 import HeroLink from "../components/home/HeroLink.jsx";
 import FeatureBanners from "../components/home/FeatureBanners.jsx";
-
+import LandingPage from "../page/LandingPage/LandingPage.jsx";
 function HomePage() {
 
 
@@ -25,7 +25,7 @@ function HomePage() {
 
   return (
     <div className="page page-home">
- 
+   
 
       <HeroLink
         href="https://www.nike.com/kr/w/lifestyle-13jrmz37eefz7yfb"
@@ -39,8 +39,9 @@ function HomePage() {
           </>
         }
       />
-
+        <LandingPage/>
       <FeatureBanners banners={featureBanners} />
+   
     </div>
   );
 }

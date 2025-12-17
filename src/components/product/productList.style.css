@@ -1,0 +1,33 @@
+.product-list-container {
+  padding: 20px;
+}
+
+.product-list-title {
+  font-size: 2em;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* 전체 컨테이너가 화면 너비를 다 쓰도록 설정 */
+.product-list-container {
+  width: 95%; /* 혹은 100% */
+  margin: 0 auto;
+  padding: 20px 0;
+  overflow: hidden; /* 슬라이더 밖으로 나가는 것 방지 */
+}
+
+/* 슬라이드 아이템 간의 간격 조절 */
+.slick-slide-container {
+  padding: 0 10px; /* 아이템 사이의 여백 */
+}
+
+/* 슬라이더 내부 높이 정렬 */
+
+/* 모바일에서 화살표가 화면을 가린다면 숨기거나 안쪽으로 조절 */
+@media (max-width: 480px) {
+  .slick-prev, .slick-next {
+    display: none !important; /* 모바일은 스와이프 위주이므로 화살표 숨김 권장 */
+  }
+}

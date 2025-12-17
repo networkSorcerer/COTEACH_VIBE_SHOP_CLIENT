@@ -42,18 +42,13 @@ const ProductDetail = () => {
     dispatch(getProductDetail(id));
   }, [id, dispatch]);
 
-  if (loading || !selectedProduct)
+  if (loading || !selectedProduct) {
     return (
-      <ColorRing
-        visible={true}
-        height="80"
-        width="80"
-        ariaLabel="blocks-loading"
-        wrapperStyle={{}}
-        wrapperClass="blocks-wrapper"
-        colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
-      />
+      <div style={{ padding: "40px", textAlign: "center" }}>
+        상품 정보를 불러오는 중입니다...
+      </div>
     );
+  }
   return (
     <Container className="product-detail-card">
       <Row>

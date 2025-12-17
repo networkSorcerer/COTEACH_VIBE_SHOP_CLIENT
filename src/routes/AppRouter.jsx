@@ -1,11 +1,11 @@
 import React from "react";
 import { Route, Routes } from "react-router";
 
-// import CartPage from "../page/CartPage/CartPage";
-// import MyPage from "../page/MyPage/MyPage";
-// import OrderCompletePage from "../page/OrderCompletePage/OrderCompletePage";
-// import PaymentPage from "../page/PaymentPage/PaymentPage";
-// import ProductDetail from "../page/ProductDetailPage/ProductDetailPage";
+import CartPage from "../page/CartPage/CartPage";
+import MyPage from "../page/MyPage/MyPage";
+import OrderCompletePage from "../page/OrderCompletePage/OrderCompletePage";
+import PaymentPage from "../page/PaymentPage/PaymentPage";
+import ProductDetail from "../page/ProductDetailPage/ProductDetailPage";
 import PrivateRoute from "./PrivateRoute";
 import HomePage from "../pages/HomePage";
 import SignupPage from "../pages/SignupPage";
@@ -19,17 +19,19 @@ const AppRouter = () => {
      <Route path="/" element={<HomePage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/login" element={<LoginPage />} />
-      {/* <Route path="/product/:id" element={<ProductDetail />} />
+      <Route path="/product/:id" element={<ProductDetail />} />
       <Route element={<PrivateRoute permissionLevel="customer" />}>
         <Route path="/cart" element={<CartPage />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/payment/success" element={<OrderCompletePage />} />
         <Route path="/account/purchase" element={<MyPage />} />
-      </Route> */}
+      </Route>
       <Route element={<PrivateRoute permissionLevel="admin" />}>
         <Route path="/admin" element={<AdminDashboard />} />       
         <Route path="/admin/product" element={<AdminProductPage />} />
         <Route path="/admin/order" element={<AdminOrderPage />} /> 
+        <Route path="/cart" element={<CartPage />} />
+
       </Route>
     </Routes>
   );

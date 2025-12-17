@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import CartProductCard from "./component/CartProductCard";
+import CartProductCard from "./component/CartProductCard.jsx";
 import OrderReceipt from "../PaymentPage/component/OrderReceipt";
 import "./style/cart.style.css";
 import { getCartList } from "../../features/cart/cartSlice";

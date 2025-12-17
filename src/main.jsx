@@ -6,6 +6,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import App from "./App";
 import "./index.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import store from "./features/store";
 
 // ✅ Vite 환경변수 방식

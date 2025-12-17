@@ -5,6 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getProductList } from "../../features/product/productSlice";
 import { getCartList } from "../../features/cart/cartSlice";
+import ItemSlider from "../../components/ItemSlider/ItemSlider";
 
 const LandingPage = () => {
   const dispatch = useDispatch();
@@ -13,7 +14,7 @@ const LandingPage = () => {
   const loading = useSelector((state) => state.product.loading);
   const [query] = useSearchParams();
   const name = query.get("name");
-
+  console.log("productList ++++++",productList)
   useEffect(() => {
     dispatch(
       getProductList({
@@ -39,15 +40,25 @@ const LandingPage = () => {
   //   );
   // }
 
+  const responsive = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 4,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 2,
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+    },
+  };
+  
+
   return (
     <Container>
-      <Row>
-        {productList.map((item) => (
-          <Col md={3} sm={12} key={item._id}>
-            <ProductCard item={item} />
-          </Col>
-        ))}
-      </Row>
+      <ItemSlider products={productList} responsive={responsive} />
     </Container>
   );
 };

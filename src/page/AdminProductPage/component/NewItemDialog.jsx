@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Form, Modal, Button, Row, Col, Alert } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import CloudinaryUploadWidget from "../../../utils/CloudinaryUploadWidget.jsx";
@@ -19,7 +19,7 @@ const InitialFormData = {
   description: "",
   category: [],
   status: "active",
-  price: 0,
+  price: "",
 };
 
 const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
@@ -45,10 +45,9 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
     if (showDialog) {
       if (mode === "edit") {
         setFormData(selectedProduct);
-        // 객체형태로 온 stock을  다시 배열로 세팅해주기
         const sizeArray = Object.keys(selectedProduct.stock).map((size) => [
           size,
-          selectedProduct.stock[size],
+          selectedProduct.stock[size].toString(),
         ]);
         setStock(sizeArray);
       } else {
@@ -59,114 +58,94 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
   }, [showDialog]);
 
   const handleClose = () => {
-    setShowDialog(false); // 모달 닫기
-    setFormData({ ...InitialFormData }); // form 초기화
-    dispatch(clearProductStatus()); // success, error 등 초기화
+    setShowDialog(false);
+    setFormData({ ...InitialFormData });
+    dispatch(clearProductStatus());
     setStockError(false);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    //재고를 입력했는지 확인, 아니면 에러
     if (stock.length === 0) return setStockError(true);
-    // 재고를 배열에서 객체로 바꿔주기
+
     const totalStock = stock.reduce((total, item) => {
       return { ...total, [item[0]]: parseInt(item[1]) };
     }, {});
-    // [['M',2]] 에서 {M:2}로
+
+    const dataToSubmit = {
+      ...formData,
+      stock: totalStock,
+      price: parseFloat(formData.price),
+    };
+
     if (mode === "new") {
-      //새 상품 만들기
-      dispatch(createProduct({ ...formData, stock: totalStock }));
+      dispatch(createProduct(dataToSubmit));
     } else {
-      // 상품 수정하기
-      dispatch(
-        editProduct({ ...formData, stock: totalStock, id: selectedProduct._id })
-      );
+      dispatch(editProduct({ ...dataToSubmit, id: selectedProduct._id }));
     }
   };
 
   const handleChange = (event) => {
-    //form에 데이터 넣어주기
     const { id, value } = event.target;
     setFormData({ ...formData, [id]: value });
   };
 
   const addStock = () => {
-    //재고타입 추가시 배열에 새 배열 추가
-    setStock([...stock, []]);
+    setStock([...stock, ["", ""]]);
   };
 
   const deleteStock = (idx) => {
-    //재고 삭제하기
     const newStock = stock.filter((item, index) => index !== idx);
     setStock(newStock);
   };
 
   const handleSizeChange = (value, index) => {
-    //  재고 사이즈 변환하기
     const newStock = [...stock];
     newStock[index][0] = value;
     setStock(newStock);
   };
 
   const handleStockChange = (value, index) => {
-    // 음수일 경우 0으로 고정하거나 무시하기
-    const newValue = Number(value);
-    if (newValue < 0) return; // 무시하려면 이 줄 사용
-    // 또는
-    // const newValue = newValue < 0 ? 0 : newValue;
-
+    // 입력 중에는 문자열로 유지
     const newStock = [...stock];
-    newStock[index][1] = newValue;
+    newStock[index][1] = value;
     setStock(newStock);
   };
 
   const onHandleCategory = (event) => {
-    // 카테고리가 이미 추가 되어 있으면 제거
-    if (formData.category.includes(event.target.value)) {
-      const newCategory = formData.category.filter(
-        (item) => item !== event.target.value
-      );
-      setFormData({
-        ...formData,
-        category: [...newCategory],
-      });
+    const value = event.target.value;
+    if (formData.category.includes(value)) {
+      const newCategory = formData.category.filter((item) => item !== value);
+      setFormData({ ...formData, category: newCategory });
     } else {
-      // 아니면 새로 추가
-      setFormData({
-        ...formData,
-        category: [...formData.category, event.target.value],
-      });
+      setFormData({ ...formData, category: [...formData.category, value] });
     }
   };
 
-  const uploadImage = (url) => {
-    //이미지 업로드
-    setFormData({ ...formData, image: url });
-  };
-
+  const uploadImage = useCallback((url) => {
+        setFormData((prevFormData) => ({ ...prevFormData, image: url }));
+      }, []);
   return (
     <Modal show={showDialog} onHide={handleClose}>
       <Modal.Header closeButton>
-        {mode === "new" ? (
-          <Modal.Title>Create New Product</Modal.Title>
-        ) : (
-          <Modal.Title>Edit Product</Modal.Title>
-        )}
+        <Modal.Title>
+          {mode === "new" ? "Create New Product" : "Edit Product"}
+        </Modal.Title>
       </Modal.Header>
+
       {error && (
         <div className="error-message">
           <Alert variant="danger">{error}</Alert>
         </div>
       )}
+
       <Form className="form-container" onSubmit={handleSubmit}>
         <Row className="mb-3">
           <Form.Group as={Col} controlId="sku">
             <Form.Label>Sku</Form.Label>
             <Form.Control
               onChange={handleChange}
-              type="string"
+              type="text"
               placeholder="Enter Sku"
               required
               value={formData.sku}
@@ -177,7 +156,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
             <Form.Label>Name</Form.Label>
             <Form.Control
               onChange={handleChange}
-              type="string"
+              type="text"
               placeholder="Name"
               required
               value={formData.name}
@@ -188,11 +167,10 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
         <Form.Group className="mb-3" controlId="description">
           <Form.Label>Description</Form.Label>
           <Form.Control
-            type="string"
-            placeholder="Description"
             as="textarea"
-            onChange={handleChange}
             rows={3}
+            placeholder="Description"
+            onChange={handleChange}
             value={formData.description}
             required
           />
@@ -215,21 +193,20 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
                       handleSizeChange(event.target.value, index)
                     }
                     required
-                    defaultValue={item[0] ? item[0].toLowerCase() : ""}
+                    value={item[0]}
                   >
-                    <option value="" disabled selected hidden>
+                    <option value="" disabled>
                       Please Choose...
                     </option>
-                    {SIZE.map((item, index) => (
+                    {SIZE.map((sizeItem, idx) => (
                       <option
-                        inValid={true}
-                        value={item.toLowerCase()}
+                        key={idx}
+                        value={sizeItem.toLowerCase()}
                         disabled={stock.some(
-                          (size) => size[0] === item.toLowerCase()
+                          (s, sIdx) => s[0] === sizeItem.toLowerCase() && sIdx !== index
                         )}
-                        key={index}
                       >
-                        {item}
+                        {sizeItem}
                       </option>
                     ))}
                   </Form.Select>
@@ -259,17 +236,19 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
           </div>
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="Image" required>
-          <Form.Label>Image</Form.Label>
-          <CloudinaryUploadWidget uploadImage={uploadImage} />
-
-          <img
-            id="uploadedimage"
-            src={formData.image}
-            className="upload-image mt-2"
-            alt="uploadedimage"
-          />
-        </Form.Group>
+        <Form.Group className="mb-3" controlId="Image">
+          <Form.Label>Image</Form.Label>
+          <CloudinaryUploadWidget uploadImage={uploadImage} />
+          {/* 🌟 이미지 URL이 있을 때만 <img> 태그를 렌더링합니다. (이미 구현되어 있음) */}
+          {formData.image && (
+            <img
+              id="uploadedimage"
+              src={formData.image}
+              className="upload-image mt-2"
+              alt="uploadedimage"
+            />
+          )}
+        </Form.Group>
 
         <Row className="mb-3">
           <Form.Group as={Col} controlId="price">
@@ -315,15 +294,10 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
             </Form.Select>
           </Form.Group>
         </Row>
-        {mode === "new" ? (
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
-        ) : (
-          <Button variant="primary" type="submit">
-            Edit
-          </Button>
-        )}
+
+        <Button variant="primary" type="submit">
+          {mode === "new" ? "Submit" : "Edit"}
+        </Button>
       </Form>
     </Modal>
   );
