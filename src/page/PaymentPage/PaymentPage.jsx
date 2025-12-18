@@ -10,7 +10,10 @@ import { createOrder } from "../../features/order/orderSlice";
 
 const PaymentPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { orderNum } = useSelector((state) => state.order);
+  const { cartList, totalPrice } = useSelector((state) => state.cart);
+
   const [cardValue, setCardValue] = useState({
     cvc: "",
     expiry: "",
@@ -18,9 +21,7 @@ const PaymentPage = () => {
     name: "",
     number: "",
   });
-  const { cartList, totalPrice } = useSelector((state) => state.cart);
-  const navigate = useNavigate();
-  const [firstLoading, setFirstLoading] = useState(true);
+
   const [shipInfo, setShipInfo] = useState({
     firstName: "",
     lastName: "",
@@ -29,8 +30,11 @@ const PaymentPage = () => {
     city: "",
     zip: "",
   });
+
+  const [firstLoading, setFirstLoading] = useState(true);
+
+  // 1. 주문 성공 시 페이지 이동 (Redux State 감시)
   useEffect(() => {
-    // 오더번호를 받으면 어디로 갈까?
     if (firstLoading) {
       setFirstLoading(false);
     } else {
@@ -38,37 +42,21 @@ const PaymentPage = () => {
         navigate("/payment/success");
       }
     }
-  }, [orderNum]);
+  }, [orderNum, navigate, firstLoading]);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // 오더 생성하기
-    const { firstName, lastName, contact, address, city, zip } = shipInfo;
-    dispatch(
-      createOrder({
-        totalPrice,
-        shipTo: { address, city, zip },
-        contact: { firstName, lastName, contact },
-        orderList: cartList.map((item) => {
-          return {
-            productId: item.productId._id,
-            price: item.productId.price,
-            qty: item.qty,
-            size: item.size,
-          };
-        }),
-      })
-    );
-  };
+  // 장바구니가 비어있으면 뒤로가기
+  useEffect(() => {
+    if (cartList.length === 0) {
+      navigate("/cart");
+    }
+  }, [cartList, navigate]);
 
   const handleFormChange = (event) => {
-    //shipInfo에 값 넣어주기
     const { name, value } = event.target;
     setShipInfo({ ...shipInfo, [name]: value });
   };
 
   const handlePaymentInfoChange = (event) => {
-    //카드정보 넣어주기
     const { name, value } = event.target;
     if (name === "expiry") {
       let newValue = cc_expires_format(value);
@@ -82,9 +70,57 @@ const PaymentPage = () => {
     setCardValue({ ...cardValue, focus: e.target.name });
   };
 
-  if (cartList.length === 0) {
-    navigate("/cart");
-  }
+  // 2. 포트원 결제 실행 함수
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const { IMP } = window;
+    if (!IMP) {
+      alert("결제 모듈을 불러올 수 없습니다. 다시 시도해주세요.");
+      return;
+    }
+    
+    // 고객사 식별 코드 초기화
+    IMP.init("imp46772407"); 
+
+    // 결제 데이터 구성
+    const data = {
+      pg: "html5_inicis",           // PG사 선택 (예: KG이니시스)
+      pay_method: "card",           // 결제수단
+      merchant_uid: `mid_${new Date().getTime()}`, // 주문번호 생성
+      amount: totalPrice,           // 결제 금액
+      name: "상품 결제",             // 주문명
+      buyer_name: `${shipInfo.lastName}${shipInfo.firstName}`,
+      buyer_tel: shipInfo.contact,
+      buyer_addr: shipInfo.address,
+      buyer_postcode: shipInfo.zip,
+    };
+
+    // 3. 결제 요청창 호출
+    IMP.request_pay(data, (response) => {
+      if (response.success) {
+        // 결제 성공 시 -> 서버에 오더 생성 요청
+        const { firstName, lastName, contact, address, city, zip } = shipInfo;
+        dispatch(
+          createOrder({
+            totalPrice,
+            shipTo: { address, city, zip },
+            contact: { firstName, lastName, contact },
+            orderList: cartList.map((item) => ({
+              productId: item.productId._id,
+              price: item.productId.price,
+              qty: item.qty,
+              size: item.size,
+            })),
+          })
+        );
+      } else {
+        // 결제 실패 시
+        alert(`결제에 실패하였습니다. 에러 내용: ${response.error_msg}`);
+      }
+    });
+  };
+
   return (
     <Container>
       <Row>

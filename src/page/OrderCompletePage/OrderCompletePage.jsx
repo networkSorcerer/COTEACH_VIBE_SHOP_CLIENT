@@ -19,7 +19,7 @@ const OrderCompletePage = () => {
   return (
     <Container className="confirmation-page">
       <img
-        src="/image/greenCheck.png"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Green_check.svg/768px-Green_check.svg.png"
         width={100}
         className="check-image"
         alt="greenCheck.png"

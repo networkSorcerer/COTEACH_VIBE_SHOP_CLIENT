@@ -1,18 +1,73 @@
-.carousel-container {
-  overflow: hidden;
-  height: 440px;
+/* 컨테이너 여백 확보 */
+.slider-wrapper {
+  padding: 20px 0;
+  position: relative;
 }
-.banner-title {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* 모던 느낌 */
-  font-size: 2rem; /* 적당한 크기 */
-  font-weight: 700; /* 강조 */
-  color: #fff; /* 흰색 글씨 */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* 살짝 그림자 */
-  letter-spacing: 1px; /* 글자 간격 넷플릭스 느낌 */
-  margin: 0; /* 기본 마진 제거 */
-  padding: 0.5rem 1rem; /* 약간의 여백 */
-  background: rgba(0, 0, 0, 0.4); /* 배너 배경 일부 투명 블랙 */
-  display: inline-block; /* 배경을 글자 크기에 맞춤 */
-  border-radius: 4px; /* 둥근 모서리 */
-  transition: transform 0.3s ease, color 0.3s ease;
+
+/* 개별 아이템 간격 조절 */
+.card-padding {
+  padding: 0 10px; /* 카드 사이의 간격을 벌려줍니다 */
+}
+
+/* 기존 라이브러리의 불필요한 라인이나 그림자 제거 */
+.react-multi-carousel-track {
+  display: flex;
+  align-items: center;
+}
+
+/* 검은색 라인이 생기는 원인인 포커스 테두리 제거 */
+.react-multi-carousel-item {
+  outline: none !important;
+}
+
+/* 화살표 디자인 커스텀 (필요 시) */
+.react-multiple-carousel__arrow {
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+}
+
+.react-multiple-carousel__arrow:hover {
+  background: #000;
+}
+
+/* 전체 컨테이너 여백 확보 (버튼이 나갈 자리) */
+.slider-wrapper {
+  padding: 0 40px; 
+  position: relative;
+}
+
+/* 화살표 버튼 공통 스타일 수정 */
+.react-multiple-carousel__arrow {
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  background: rgba(0, 0, 0, 0.2) !important; /* 배경을 흐리게 해서 겹쳐도 덜 거슬리게 */
+  transition: all 0.3s;
+  z-index: 1000;
+}
+
+.react-multiple-carousel__arrow:hover {
+  background: rgba(0, 0, 0, 0.8) !important; /* 마우스 올릴 때만 진하게 */
+}
+
+/* 왼쪽 버튼 위치 조정 */
+.react-multiple-carousel__arrow--left {
+  left: 0 !important; /* 왼쪽 끝으로 밀기 */
+}
+
+/* 오른쪽 버튼 위치 조정 */
+.react-multiple-carousel__arrow--right {
+  right: 0 !important; /* 오른쪽 끝으로 밀기 */
+}
+
+/* 버튼 내부 화살표 아이콘 크기 조절 */
+.react-multiple-carousel__arrow::before {
+  font-size: 18px !important;
+  font-weight: bold;
+}
+
+/* 카드 아이템들이 버튼과 겹치지 않게 간격 조정 */
+.product-slider-item {
+  padding: 10px;
 }

@@ -14,11 +14,21 @@ function HomeNavbar({ user, isAdmin }) {
   const goToCart = () => {
     navigate("/cart");
   };
+  const goToOrder = () => {
+    navigate("/account/purchase");
+  };
 
   return (
     <header className="navbar sticky">
       <div className="navbar-inner">
         <div className="brand">
+        <Link to="/">
+        <img
+  width={100}
+  src="https://i.namu.wiki/i/7odiKOobwcRn3h5h_Qj63poBcBpLas3nOiDi1T2MpFPACvELiPckUz1sand2gAyOx9hQMn3IQ9HgH_cAtFsokg.svg"
+  alt="nike-logo"
+/>
+        </Link>
           <span className="swoosh">NIKE</span>
         </div>
 
@@ -54,6 +64,7 @@ function HomeNavbar({ user, isAdmin }) {
 
               <Dropdown.Menu>
                 <Dropdown.Item onClick={goToCart}>장바구니</Dropdown.Item>
+                <Dropdown.Item onClick={goToOrder}>주문내역</Dropdown.Item>
                 <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
