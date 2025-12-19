@@ -241,3 +241,7 @@ button.ghost {
 .hero-link:focus {
   outline: none;
 }
+.feature-hero-overlay h1,
+.feature-hero-overlay h2 {
+  color: #ffffff;
+}
