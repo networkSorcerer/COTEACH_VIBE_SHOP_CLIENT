@@ -110,7 +110,7 @@ const AdminProductPage = () => {
           onPageChange={handlePageClick}
           forcePage={searchQuery.page - 1}
           pageRangeDisplayed={5}          // ⭐ 5개씩 표시
-          marginPagesDisplayed={1}        // ⭐ 필수
+          marginPagesDisplayed={5}        // ⭐ 필수
           containerClassName="pagination justify-content-center mt-4"
           pageClassName="page-item"
           pageLinkClassName="page-link"
